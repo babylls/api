@@ -70,23 +70,48 @@
                 alert('条件不能为空！');
                 return false;
             }
-         
-            var param = {
-                city: api_condition,
-                key: '370107c7ac2003771216a690addf7a11'
-            };
-            console.log(param);
-            $.get(url, param,function (data) {
-                $('#result').empty();
-                var jdata = data;
-                console.log(data);
-                $.each(jdata.lives, function (d, i) {
-                    $('#result').append('<p>' + i.city + '|' + i.weather + '|' + i.reporttime + '<p>');
+            if(api_type == "天气查询"){
+                var param = {
+                    city: api_condition,
+                    key: '370107c7ac2003771216a690addf7a11'
+                    };
+                console.log(param);
+                $.get(url, param,function (data) {
+                    $('#result').empty();
+                    var jdata = data;
+                    console.log(data);
+                    $.each(jdata.lives, function (d, i) {
+                        $('#result').append('<p>' + i.city + '|' + i.weather + '|' + i.reporttime + '<p>');
+                    });
+                    if(jdata.lives.length==0){
+                       $('#result').text('暂无数据');
+                    }
                 });
-                if(jdata.lives.length==0){
-                   $('#result').text('暂无数据');
-                }
-            });
+			    }
+			if(api_type == "快递查询"){
+			    var customer = 'B02854ED8B4E2C7AEEBE6AB0BB486B3C',
+				var sign = 'CJqiPpsm7659'
+                var param = {
+                    com: 'yuantong',
+                    num: '1111111'
+                    };
+                console.log(param);
+                $.post(url, param,function (data) {
+                    $('#result').empty();
+                    var jdata = data;
+                    console.log(data);
+                    $.each(jdata.data, function (d, i) {
+                        $('#result').append('<p>' + i.context + '|' + i.time + '|' + i.time + '<p>');
+                    });
+                    if(jdata.data.length==0){
+                       $('#result').text('暂无数据');
+                    }
+                });
+			    }
+			if((api_type != "天气查询") && api_type != "快递查询")){
+			    alert('API暂时无法使用');
+                return false;
+			    }
         }
     </script>
 </head>
@@ -97,7 +122,7 @@
         <select id="type" class="text">
         </select>
         <label for="condition">查询条件</label>
-        <input type="text" id="condition" placeholder="城市/快递号等" class="text"/>
+        <input type="text" id="condition" placeholder="1-城市、2-快递公司|单号等" class="text"/>
         <span class="btn" onclick="search()">搜索</span>
     <div id="result">
 
